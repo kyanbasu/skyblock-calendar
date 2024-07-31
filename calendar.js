@@ -3,7 +3,7 @@ const fs = require('node:fs');
 require('dotenv').config();
 
 //is running as dev branch
-const dev = true
+const dev = (process.env.ISDEV == 'true')
 const webhooks = [process.env.PROD, //prod
                   process.env.DEV] //dev
 const messageIDs = ["1267915993510973563", //prod
