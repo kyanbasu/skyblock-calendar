@@ -11,6 +11,19 @@ const messageIDs = ["1268290767114338487", //prod
 
 const filename = dev ? "calendar-dev.json" : "calendar.json"
 
+
+const news = "JERRY <:stjerry:1268243619928870982>"
+
+
+
+
+
+
+
+
+
+
+
 const fetchur = ["20x Yellow Stained Glass", "1x Compass", " 20x Mithril", "1x Firework Rocket", 
     "1x Cheap Coffee, Decent Coffee or Black Coffee", "1x Iron Door or Wood Door", "3x Rabbit's Foot", 
     "1x Superboom TNT", "1x Pumpkin", "1x Flint and Steel", "50x Emerald", "50x Red Wool"]
@@ -36,9 +49,18 @@ const roles = {"Cocoa Beans": "1267926635420844093",
                 "Pumpkin": "1267928112495333446",
 }
 
+const GAME_DAY = 20 * 60;
+const GAME_MONTH = GAME_DAY * 31;
+const GAME_YEAR = GAME_MONTH * 12;
+const SERVER_START_UTC = 1560275700;
+const SERVER_START_GAME_DATE = GAME_YEAR * 1 + GAME_MONTH * 1 + GAME_DAY * 1;
+
 var date = ""
 var data = {}
 var initialData = null
+
+var gametime
+
 
 var contentForMentions = []
 
@@ -85,29 +107,25 @@ async function updateData(){
 
     dev && console.log(data.fetchur)
     
-    const GAME_DAY = 20 * 60;
-    const GAME_MONTH = GAME_DAY * 31;
-    const GAME_YEAR = GAME_MONTH * 12;
-    const SERVER_START_UTC = 1560275700;
-    const SERVER_START_GAME_DATE = GAME_YEAR * 1 + GAME_MONTH * 1 + GAME_DAY * 1;
     //let ms = (SERVER_START_UTC - SERVER_START_GAME_DATE + GAME_DAY * get("day") + GAME_MONTH * get("month") + GAME_YEAR * get("year")) * 1000;
     // (GAME_DAY * get("day") + GAME_DAY*31 * get("month") + GAME_DAY*31*12 * get("year")) = ms/1000 - (SERVER_START_UTC - SERVER_START_GAME_DATE)
-    let gametime = (Math.floor(Date.now()/1000) - (SERVER_START_UTC - SERVER_START_GAME_DATE))
+    gametime = (Math.floor(Date.now()/1000) - (SERVER_START_UTC - SERVER_START_GAME_DATE))
+    //gametime = GAME_YEAR*data?.farming?.year + GAME_DAY*23 //uncomment and set gametime for testing
     
     const day = Math.floor(gametime/(20*60) - Math.floor(gametime/(20*60*31))*31)
     const month = Math.floor(gametime/(20*60*31) - Math.floor(gametime/(20*60*31*12))*12)
     const year = Math.floor(gametime/(20*60*31*12))
     if(day != 0)
-        date = `${seasons[month-1]} ${day}${(day%10 < 3 && day%10!=0) ? ed[day%10-1] : ed[3]} ${year}`
+        date = `${seasons[month > 0 ? month-1 : 11]} ${day}${(day%10 < 3 && day%10!=0) ? ed[day%10-1] : ed[3]} ${year}`
     else
-        date = `${seasons[month-2]} ${31}${ed[0]} ${year}`
+        date = `${seasons[month > 0 ? month > 1 ? month-2 : 11 : 10]} ${31}${ed[0]} ${year}`
     
 
     tillNextSBDay = (Math.floor(gametime/(20*60))+1)*20*60 - gametime
     dev && console.log(tillNextSBDay + "s till next sb day")
 
     //fetchur
-    if(Date.now() > new Date(data?.["fetchur"]?.["reset"]).valueOf() && Date.now() - new Date(data?.["fetchur"]?.["reset"]).valueOf() > 60000 || !data?.["fetchur"]?.["current"]){
+    if(Date.now() > new Date(data?.["fetchur"]?.["reset"]).valueOf() || !data?.["fetchur"]?.["current"]){
         if(!data?.["fetchur"]?.["current"] || data.fetchur.current > 10) {data["fetchur"] = {}; data["fetchur"]["current"] = 0}
         data.fetchur.current += 1
         data.fetchur.reset = new Date()
@@ -145,7 +163,7 @@ function sendWebhook(){
                 if(parseInt(key) * 1000 > Date.now())
                     farming += `> \t\t<t:${key}:R>\t\t ${val_formatted}\n`
                 else
-                    farming += `> <:WHAT:1082407334510350368> LIVE, koniec <t:${parseInt(key) + 60*20}:R> ${val_formatted}\n`
+                    farming += `> <:WHAT:1082407334510350368> LIVE, end <t:${parseInt(key) + 60*20}:R> ${val_formatted}\n`
                 i++
             }
         }
@@ -162,12 +180,61 @@ function sendWebhook(){
               },
               body: JSON.stringify(
                 {
-                    'content': `# ${date}\tNext day <t:${Math.floor(Date.now()/1000) + tillNextSBDay}:R>\n` + 
-                                "## <:ta:1095767584189726870> FARMING CALENDAR\n" + farming +
-                                "## <:fetchur:1267972967925809213> FETCHUR\n> " + fetchur[ data.fetchur.current ] + `\nnext <t:${Math.floor(new Date(data.fetchur.reset).valueOf()/1000)}:R>` +
-                                "\n\n> *Updejty: pingi do farminga powinny dzialac*" +
-                                `\n> Ostatni refresh <t:${Math.floor(Date.now()/1000)}:R>`,
+                    'content': "",
                     'username':'kalendarz adwentowy',
+                    "embeds": [
+                        {
+                            "color": 0x0099ff,
+                            "description": `# ${date}\n## Next day <t:${Math.floor(Date.now()/1000) + tillNextSBDay}:R>\n`,
+                            "fields": [
+                                {
+                                    name: "<:ta:1095767584189726870> FARMING CALENDAR",
+                                    value: farming,
+                                    inline: false,
+                                },
+                                {
+                                    name: "<:like:1080554547644219392> OTHER",
+                                    value: `> <:stjerry:1268243619928870982> Jerry's Workshop\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY, GAME_YEAR)}\n` +
+                                           `> :birthday: New Year Celebration\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY*29, GAME_MONTH*11 + GAME_DAY*31)}`,
+                                    inline: true,
+                                },
+                                {
+                                    name: "<:fetchur:1267972967925809213> FETCHUR\n",
+                                    value: `> ${fetchur[ data.fetchur.current ]}\n> next <t:${Math.floor(new Date(data.fetchur.reset).valueOf()/1000)}:R>`,
+                                    inline: true,
+                                },
+                                {
+                                    name: '\u200b',
+                                    value: '\u200b',
+                                    inline: false,
+                                },
+                                {
+                                    name: "Updejty",
+                                    value: `> ${news}\n> Last refresh <t:${Math.floor(Date.now()/1000)}:R>`,
+                                    inline: true,
+                                },
+                                
+                            ],
+                            image: {
+                                url: 'https://cdn.discordapp.com/attachments/993848864232714270/1268187135270457414/image.png',
+                            },
+                            timestamp: new Date().toISOString(),
+                            "footer": {
+                                text: 'hi',
+                                icon_url: 'https://cdn.discordapp.com/attachments/1142397058720993320/1266414023172161576/IMG20240726181621.jpg',
+                            },
+                        },/*
+                        {
+                            "title": "kupic",
+                            "color": 1009151,
+                            "description": "ice, packed ice, fish, pufferfish, salmon, dandelion, string"
+                        },
+                        {
+                            "title": "zrobic ",
+                            "color": 5370,
+                            "description": "heavy pearl, experimentation, comission, fraction quest"
+                        },*/
+                    ],
                 }
               )
             })
@@ -197,6 +264,16 @@ function sendWebhook(){
 
 function mention(_data){
     contentForMentions.push(_data)
+}
+
+function getEventTimer(timeOffsetStart, timeOffsetEnd){
+    let timeOfYear = (gametime - GAME_MONTH - GAME_DAY) % GAME_YEAR
+    if(timeOfYear < timeOffsetStart - GAME_DAY)
+        return `<t:${Math.floor(Date.now()/1000) - timeOfYear + timeOffsetStart - GAME_DAY}:R>`
+    else if(timeOfYear < timeOffsetEnd)
+        return `<:WHAT:1082407334510350368> LIVE, end <t:${Math.floor(Date.now()/1000) - timeOfYear + timeOffsetEnd}:R>`
+    else
+        return `<t:${Math.floor(Date.now()/1000) - timeOfYear + timeOffsetStart - GAME_DAY + GAME_YEAR}:R>`
 }
 
 async function mentionAll(){
