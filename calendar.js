@@ -6,7 +6,7 @@ require('dotenv').config();
 const dev = (process.env.ISDEV == 'true')
 const webhooks = [process.env.PROD, //prod
                   process.env.DEV] //dev
-const messageIDs = ["1267915993510973563", //prod
+const messageIDs = ["1268290767114338487", //prod
                     "1267973335657222195"] //dev
 
 const filename = dev ? "calendar-dev.json" : "calendar.json"
