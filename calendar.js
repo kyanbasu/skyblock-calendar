@@ -12,7 +12,7 @@ const messageIDs = ["1268699252142506056", //prod
 const filename = dev ? "calendar-dev.json" : "calendar.json"
 
 
-const news = "JERRY <:stjerry:1268243619928870982>"
+const news = "JERRY <:stjerry:1268243619928870982> i wiecej eventow"
 
 
 
@@ -203,9 +203,12 @@ function sendWebhook(){
                                     inline: false,
                                 },
                                 {
-                                    name: "<:like:1080554547644219392> OTHER",
+                                    name: "<:PepoG:781852032213581866> EVENTS",
                                     value: `> <:stjerry:1268243619928870982> Jerry's Workshop\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY, GAME_YEAR)}\n` +
-                                           `> :birthday: New Year Celebration\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY*29, GAME_MONTH*11 + GAME_DAY*31)}`,
+                                           `> :birthday: New Year Celebration\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY*29, GAME_MONTH*11 + GAME_DAY*31)}\n` +
+                                           `> :skull: Spooky Festival\n> ${getEventTimer(GAME_MONTH*7 + GAME_DAY*29, GAME_MONTH*7 + GAME_DAY*31)}\n` +
+                                           `> <:a_bunwink:1253677488891236443> Hoppity's Hunt\n> ${getEventTimer(GAME_MONTH*1 + GAME_DAY*1, GAME_MONTH*1 + GAME_DAY*1 + 3600*31)}\n` +
+                                           `> <:homik:692062324965638235> Election\n> ${getEventTimer(GAME_MONTH*5 + GAME_DAY*27, GAME_YEAR + GAME_MONTH*2 + GAME_DAY*26)}\n`,
                                     inline: true,
                                 },
                                 {
