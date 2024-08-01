@@ -125,8 +125,8 @@ async function updateData(){
     dev && console.log(tillNextSBDay + "s till next sb day")
 
     //fetchur
-    if(Date.now() > new Date(data?.["fetchur"]?.["reset"]).valueOf() || !data?.["fetchur"]?.["current"]){
-        if(!data?.["fetchur"]?.["current"] || data.fetchur.current > 10) {data["fetchur"] = {}; data["fetchur"]["current"] = 0}
+    if(Date.now() > new Date(data?.["fetchur"]?.["reset"]).valueOf() || data?.["fetchur"]?.["current"] == undefined){
+        if(data?.["fetchur"]?.["current"] == undefined || data.fetchur.current > 10) {data["fetchur"] = {}; data["fetchur"]["current"] = 0}
         data.fetchur.current += 1
         data.fetchur.reset = new Date()
         data.fetchur.reset.setUTCHours(7,0,0,0)
@@ -134,7 +134,7 @@ async function updateData(){
     }
 
     //farming calendar api
-    if(!data?.["farming"]?.["year"] || data["farming"]["year"] < year){
+    if(data?.["farming"]?.["year"] == undefined || data["farming"]["year"] < year){
         dev && console.log("fetching...")
         ftch("https://api.elitebot.dev/contests/at/now").then(json => {
             //console.log(json["contests"])
@@ -245,7 +245,7 @@ function sendWebhook(){
         })();
 
         if( mention_it != 0 &&
-            (!data?.["last-farming-mention"] || data["last-farming-mention"] < Date.now() - 60000*5)){
+            (data?.["last-farming-mention"] == undefined || data["last-farming-mention"] < Date.now() - 60000*5)){
             mention(farming.split('\n')[0])
             data["last-farming-mention"] = Date.now()
         }
