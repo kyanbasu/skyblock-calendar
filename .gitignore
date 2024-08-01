@@ -132,3 +132,6 @@ dist
 # any cached data
 calendar.json
 calendar-dev.json
+
+# to sending messages
+send-empty-messages.js
