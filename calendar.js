@@ -184,6 +184,16 @@ function sendWebhook(){
                     'username':'kalendarz adwentowy',
                     "embeds": [
                         {
+                            "title": "kupic",
+                            "color": 0x006688,
+                            "description": "ice, packed ice, fish, pufferfish, salmon, dandelion, string"
+                        },
+                        {
+                            "title": "zrobic ",
+                            "color": 0x0088bb,
+                            "description": "heavy pearl, experimentation, comission, fraction quest"
+                        },
+                        {
                             "color": 0x0099ff,
                             "description": `# ${date}\n## Next day <t:${Math.floor(Date.now()/1000) + tillNextSBDay}:R>\n`,
                             "fields": [
@@ -223,17 +233,8 @@ function sendWebhook(){
                                 text: 'hi',
                                 icon_url: 'https://cdn.discordapp.com/attachments/1142397058720993320/1266414023172161576/IMG20240726181621.jpg',
                             },
-                        },/*
-                        {
-                            "title": "kupic",
-                            "color": 1009151,
-                            "description": "ice, packed ice, fish, pufferfish, salmon, dandelion, string"
                         },
-                        {
-                            "title": "zrobic ",
-                            "color": 5370,
-                            "description": "heavy pearl, experimentation, comission, fraction quest"
-                        },*/
+                        
                     ],
                 }
               )
