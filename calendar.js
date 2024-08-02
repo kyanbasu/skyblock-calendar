@@ -145,6 +145,9 @@ async function updateData(){
     } else {
         sendWebhook()
     }
+
+    //election api
+    //if()
 }
 
 function sendWebhook(){
@@ -207,14 +210,18 @@ function sendWebhook(){
                                     value: `> <:stjerry:1268243619928870982> Jerry's Workshop\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY, GAME_YEAR)}\n` +
                                            `> :birthday: New Year Celebration\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY*29, GAME_MONTH*11 + GAME_DAY*31)}\n` +
                                            `> :skull: Spooky Festival\n> ${getEventTimer(GAME_MONTH*7 + GAME_DAY*29, GAME_MONTH*7 + GAME_DAY*31)}\n` +
-                                           `> <:a_bunwink:1253677488891236443> Hoppity's Hunt\n> ${getEventTimer(GAME_MONTH*1 + GAME_DAY*1, GAME_MONTH*1 + GAME_DAY*1 + 3600*31)}\n` +
-                                           `> <:homik:692062324965638235> Election\n> ${getEventTimer(GAME_MONTH*5 + GAME_DAY*27, GAME_YEAR + GAME_MONTH*2 + GAME_DAY*26)}\n`,
+                                           `> <:a_bunwink:1253677488891236443> Hoppity's Hunt\n> ${getEventTimer(GAME_MONTH*1 + GAME_DAY*1, GAME_MONTH*1 + GAME_DAY*1 + 3600*31)}\n`,
+                                    inline: true,
+                                },
+                                {
+                                    name: "<:homik:692062324965638235> Election",
+                                    value: `> ${getEventTimer(GAME_MONTH*5 + GAME_DAY*27, GAME_YEAR + GAME_MONTH*2 + GAME_DAY*26)}\n`,
                                     inline: true,
                                 },
                                 {
                                     name: "<:fetchur:1267972967925809213> FETCHUR\n",
                                     value: `> ${fetchur[ data.fetchur.current ]}\n> next <t:${Math.floor(new Date(data.fetchur.reset).valueOf()/1000)}:R>`,
-                                    inline: true,
+                                    inline: false,
                                 },
                                 {
                                     name: '\u200b',
