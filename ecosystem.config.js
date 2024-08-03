@@ -1,5 +1,5 @@
 // run simply with
-// pm2 start pm2-config.js
+// pm2 start ecosystem.config.js
 module.exports = {
     apps : [{
       name   : "skyblock-calendar",

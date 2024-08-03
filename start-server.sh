@@ -1,1 +1,1 @@
-pm2 start pm2-config.js
+pm2 start ecosystem.config.js
