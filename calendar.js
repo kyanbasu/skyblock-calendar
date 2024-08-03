@@ -255,8 +255,7 @@ function sendWebhook(){
             dev && console.log(`${content.status} ${content.statusText}`);
         })();
 
-        if( mention_it != 0 &&
-            (data?.["last-farming-mention"] == undefined || data["last-farming-mention"] < Date.now() - 60000*5)){
+        if(mention_it != 0 && (data?.["last-farming-mention"] == undefined || data["last-farming-mention"] < Date.now() - 60000*5)){
             mention(farming.split('\n')[0])
             data["last-farming-mention"] = Date.now()
         }
@@ -288,7 +287,6 @@ function getEventTimer(timeOffsetStart, timeOffsetEnd){
 async function mentionAll(){
     //contentForMentions is array
     dev && console.log(contentForMentions)
-    let completed = 0
     const promises = contentForMentions.map(async _m => {
         const response = await fetch((dev ? webhooks[1] : webhooks[0]) + "?wait=true", {
             method: "POST",
@@ -305,6 +303,10 @@ async function mentionAll(){
         const res = await response.json();
         data["mentions"].push(res.id);
     });
+
+    await Promise.all(promises).then(() => {
+        contentForMentions = []
+    })
 }
 
 function saveData(){
