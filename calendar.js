@@ -64,6 +64,19 @@ try{
     data = JSON.parse(fs.readFileSync(filename, 'utf8'));
 } catch {console.log("failed to read data")}
 
+if(data?.["mentions"]){
+    data["mentions"].forEach(message => {
+        fetch((dev ? webhooks[1] : webhooks[0] ) + `/messages/${message}`, {
+            method: "DELETE",
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+        })
+    });
+}
+data["mentions"] = []
+
 var gametime
 
 
@@ -311,8 +324,8 @@ async function mentionAll(){
 }
 
 function saveData(){
-    dev && console.log("saved")
     fs.writeFileSync(filename, JSON.stringify(data))
+    console.log("saved")
 }
 
 if (updateInterval <= 5000)
@@ -355,7 +368,7 @@ setTimeout(() => {
 process.stdin.resume();//so the program will not close instantly
 
 function exitHandler(options, exitCode) {
-    if (options.cleanup) {console.log(`saving data at ${new Date}`); saveData()}
+    if (options.cleanup) {saveData()}
     if (exitCode || exitCode === 0) console.log(exitCode);
     if (options.exit) process.exit();
 }
