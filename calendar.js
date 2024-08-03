@@ -24,6 +24,8 @@ const news = "JERRY <:stjerry:1268243619928870982> i wiecej eventow"
 
 const updateInterval = 30_000
 
+const lastRestart = new Date();
+
 const fetchur = ["20x Yellow Stained Glass", "1x Compass", " 20x Mithril", "1x Firework Rocket", 
     "1x Cheap Coffee, Decent Coffee or Black Coffee", "1x Iron Door or Wood Door", "3x Rabbit's Foot", 
     "1x Superboom TNT", "1x Pumpkin", "1x Flint and Steel", "50x Emerald", "50x Red Wool"]
@@ -177,7 +179,6 @@ function sendWebhook(){
         }
     
         //console.log(farming);
-
         (async () => {
             let method = (dev ? messageIDs[1] : messageIDs[0]).length < 17 ? "POST" : "PATCH"
             const rawResponse = await fetch((dev ? webhooks[1] : webhooks[0]) + (method == "PATCH" ? `/messages/${dev ? messageIDs[1] : messageIDs[0]}` : ""), {
@@ -241,7 +242,7 @@ function sendWebhook(){
                             },
                             timestamp: new Date().toISOString(),
                             "footer": {
-                                text: 'hi',
+                                text: lastRestart.toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw' }),
                                 icon_url: 'https://cdn.discordapp.com/attachments/1142397058720993320/1266414023172161576/IMG20240726181621.jpg',
                             },
                         },
