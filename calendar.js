@@ -22,7 +22,7 @@ const news = "JERRY <:stjerry:1268243619928870982> i wiecej eventow"
 
 
 
-
+const updateInterval = 10_000
 
 const fetchur = ["20x Yellow Stained Glass", "1x Compass", " 20x Mithril", "1x Firework Rocket", 
     "1x Cheap Coffee, Decent Coffee or Black Coffee", "1x Iron Door or Wood Door", "3x Rabbit's Foot", 
@@ -57,14 +57,15 @@ const SERVER_START_GAME_DATE = GAME_YEAR * 1 + GAME_MONTH * 1 + GAME_DAY * 1;
 
 var date = ""
 var data = {}
-var initialData = null
+
+try{
+    data = JSON.parse(fs.readFileSync(filename, 'utf8'));
+} catch {console.log("failed to read data")}
 
 var gametime
 
 
 var contentForMentions = []
-
-const start = process.hrtime();
 
 async function ftch(_url){
 	try {
@@ -85,12 +86,6 @@ async function ftch(_url){
 }
 
 async function updateData(){
-
-    try{
-        data = JSON.parse(fs.readFileSync(filename, 'utf8'));
-        initialData = JSON.parse(JSON.stringify(data));
-    } catch {console.log("failed to read data")}
-
     // removing past mentions
     if(data?.["mentions"]){
         data["mentions"].forEach(message => {
@@ -116,6 +111,7 @@ async function updateData(){
     const month = Math.floor(gametime/(20*60*31) - Math.floor(gametime/(20*60*31*12))*12)
     const year = Math.floor(gametime/(20*60*31*12))
     if(day != 0)
+        //        determine season from array                  determine number suffix for day (st,nd,rd,th)
         date = `${seasons[month > 0 ? month-1 : 11]} ${day}${(day%10 < 3 && day%10!=0) ? ed[day%10-1] : ed[3]} ${year}`
     else
         date = `${seasons[month > 0 ? month > 1 ? month-2 : 11 : 10]} ${31}${ed[0]} ${year}`
@@ -253,12 +249,9 @@ function sendWebhook(){
             data["last-farming-mention"] = Date.now()
         }
         
-        if(contentForMentions.length == 0){
-            if(JSON.stringify(initialData) != JSON.stringify(data))
-                saveData()
-        } else {
+        if(contentForMentions.length != 0)
             mentionAll()
-        }
+
         if(dev){
             const end = process.hrtime(start);
             console.log(`Execution time: ${end[0]}s ${end[1] / 1000000}ms`);
@@ -300,9 +293,6 @@ async function mentionAll(){
         const res = await response.json();
         data["mentions"].push(res.id);
     });
-    await Promise.all(promises).then(e => {
-        saveData()
-    })
 }
 
 function saveData(){
@@ -310,4 +300,36 @@ function saveData(){
     fs.writeFileSync(filename, JSON.stringify(data))
 }
 
+
+//main
+var start = process.hrtime();
 updateData()
+
+if (updateInterval <= 5000)
+    throw new Error("updateInterval must be greater than 5000ms") //see below
+
+setInterval(() => {
+    start = process.hrtime();
+    updateData()
+}, updateInterval);
+
+process.stdin.resume();//so the program will not close instantly
+
+function exitHandler(options, exitCode) {
+    if (options.cleanup) {console.log(`saving data at ${new Date}`); saveData()}
+    if (exitCode || exitCode === 0) console.log(exitCode);
+    if (options.exit) process.exit();
+}
+
+//do something when app is closing
+process.on('exit', exitHandler.bind(null,{cleanup:true}));
+
+//catches ctrl+c event
+process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+
+// catches "kill pid" (for example: nodemon restart)
+process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
+process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+
+//catches uncaught exceptions
+process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
