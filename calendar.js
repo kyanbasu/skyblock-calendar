@@ -78,7 +78,7 @@ if(data?.["mentions"]){
 data["mentions"] = []
 
 var gametime
-
+var tillNextSBDay
 
 var contentForMentions = []
 
@@ -325,7 +325,6 @@ async function mentionAll(){
 
 function saveData(){
     fs.writeFileSync(filename, JSON.stringify(data))
-    console.log("saved")
 }
 
 if (updateInterval <= 5000)
@@ -345,7 +344,6 @@ if(data?.["farming"]?.["year"] == undefined){
         //console.log(json["contests"])
         dev && console.log("fetched")
         data["farming"] = json
-        sendWebhook()
     })
 }
 
@@ -368,7 +366,10 @@ setTimeout(() => {
 process.stdin.resume();//so the program will not close instantly
 
 function exitHandler(options, exitCode) {
-    if (options.cleanup) {saveData()}
+    if (options.cleanup) {
+        console.log(`> Saving data at ${new Date}`)
+        saveData()
+    }
     if (exitCode || exitCode === 0) console.log(exitCode);
     if (options.exit) process.exit();
 }
