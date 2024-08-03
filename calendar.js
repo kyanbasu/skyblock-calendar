@@ -121,26 +121,38 @@ async function updateData(){
     dev && console.log(tillNextSBDay + "s till next sb day")
 
     //fetchur
-    if(Date.now() > new Date(data?.["fetchur"]?.["reset"]).valueOf() || data?.["fetchur"]?.["current"] == undefined){
-        if(data?.["fetchur"]?.["current"] == undefined || data.fetchur.current > 10) {data["fetchur"] = {}; data["fetchur"]["current"] = 0}
-        data.fetchur.current += 1
-        data.fetchur.reset = new Date()
-        data.fetchur.reset.setUTCHours(7,0,0,0)
-        data.fetchur.reset.setDate(data.fetchur.reset.getDate()+1).valueOf()
-    }
+    const fetchurPromise = new Promise((resolve, reject) => {
+        if(Date.now() > new Date(data?.["fetchur"]?.["reset"]).valueOf()){
+            if(data?.["fetchur"]?.["current"] == undefined || data.fetchur.current > 10) {data["fetchur"] = {}; data["fetchur"]["current"] = 0}
+            data.fetchur.current += 1
+            data.fetchur.reset = new Date()
+            data.fetchur.reset.setUTCHours(7,0,0,0)
+            data.fetchur.reset.setDate(data.fetchur.reset.getDate()+1).valueOf()
+        }
+        resolve();
+    })
 
     //farming calendar api
-    if(data?.["farming"]?.["year"] == undefined || data["farming"]["year"] < year){
-        dev && console.log("fetching...")
-        ftch("https://api.elitebot.dev/contests/at/now").then(json => {
-            //console.log(json["contests"])
-            dev && console.log("fetched")
-            data["farming"] = json
+    const farmingPromise = new Promise((resolve, reject) => {
+        if(data["farming"]["year"] < year){
+            dev && console.log("fetching...")
+            ftch("https://api.elitebot.dev/contests/at/now").then(json => {
+                //console.log(json["contests"])
+                dev && console.log("fetched")
+                data["farming"] = json
+                resolve()
+            }).catch((error) => reject(error))
+        } else resolve()
+    })
+
+    //wait for all apis
+    Promise.all([fetchurPromise, farmingPromise])
+        .then(() => {
             sendWebhook()
         })
-    } else {
-        sendWebhook()
-    }
+        .catch((error) => {
+            console.error("Error:", error);
+        });
 }
 
 function sendWebhook(){
@@ -249,7 +261,7 @@ function sendWebhook(){
             data["last-farming-mention"] = Date.now()
         }
         
-        if(contentForMentions.length != 0)
+        if(contentForMentions.length > 0)
             mentionAll()
 
         if(dev){
@@ -300,18 +312,42 @@ function saveData(){
     fs.writeFileSync(filename, JSON.stringify(data))
 }
 
+if (updateInterval <= 5000)
+    throw new Error("updateInterval must be greater than 5000ms")
 
 //main
-var start = process.hrtime();
-updateData()
 
-if (updateInterval <= 5000)
-    throw new Error("updateInterval must be greater than 5000ms") //see below
+//checks if fields exist, if not - create them
+if(data?.["fetchur"]?.["current"] == undefined){
+    data["fetchur"] = {};
+    data["fetchur"]["current"] = 0
+}
 
-setInterval(() => {
+if(data?.["farming"]?.["year"] == undefined){
+    dev && console.log("fetching...")
+    ftch("https://api.elitebot.dev/contests/at/now").then(json => {
+        //console.log(json["contests"])
+        dev && console.log("fetched")
+        data["farming"] = json
+        sendWebhook()
+    })
+}
+
+//to start at a fixed time
+const now = new Date();
+const millisecondsUntilNextFullMinute = ((Math.floor(updateInterval/1000) - (now.getSeconds() % Math.floor(updateInterval/1000))) * 1000) - now.getMilliseconds();
+var start = 0;
+
+setTimeout(() => {
     start = process.hrtime();
     updateData()
-}, updateInterval);
+
+    setInterval(() => {
+        start = process.hrtime();
+        updateData()
+    }, updateInterval);
+}, millisecondsUntilNextFullMinute);
+
 
 process.stdin.resume();//so the program will not close instantly
 
