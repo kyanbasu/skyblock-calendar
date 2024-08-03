@@ -22,7 +22,7 @@ const news = "JERRY <:stjerry:1268243619928870982> i wiecej eventow"
 
 
 
-const updateInterval = 10_000
+const updateInterval = 30_000
 
 const fetchur = ["20x Yellow Stained Glass", "1x Compass", " 20x Mithril", "1x Firework Rocket", 
     "1x Cheap Coffee, Decent Coffee or Black Coffee", "1x Iron Door or Wood Door", "3x Rabbit's Foot", 
