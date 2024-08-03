@@ -1,1 +1,1 @@
-screen -dmS skyblock-calendar node --watch calendar.js
+pm2 start pm2-config.js
