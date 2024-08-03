@@ -255,7 +255,7 @@ function sendWebhook(){
                             },
                             timestamp: new Date().toISOString(),
                             "footer": {
-                                text: lastRestart.toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw' }),
+                                text: "Last restart " + lastRestart.toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw' }),
                                 icon_url: 'https://cdn.discordapp.com/attachments/1142397058720993320/1266414023172161576/IMG20240726181621.jpg',
                             },
                         },
