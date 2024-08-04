@@ -12,7 +12,7 @@ const messageIDs = ["1268699252142506056", //prod
 const filename = dev ? "calendar-dev.json" : "calendar.json"
 
 
-const news = "JERRY <:stjerry:1268243619928870982> i wiecej eventow"
+const news = "JERRY <:stjerry:1268243619928870982> i wiecej eventow, fix eventow"
 
 
 
@@ -78,6 +78,7 @@ if(data?.["mentions"]){
 data["mentions"] = []
 
 var gametime
+let timeOfYear
 var tillNextSBDay
 
 var contentForMentions = []
@@ -121,6 +122,8 @@ async function updateData(){
     // (GAME_DAY * get("day") + GAME_DAY*31 * get("month") + GAME_DAY*31*12 * get("year")) = ms/1000 - (SERVER_START_UTC - SERVER_START_GAME_DATE)
     gametime = (Math.floor(Date.now()/1000) - (SERVER_START_UTC - SERVER_START_GAME_DATE))
     //gametime = GAME_YEAR*data?.farming?.year + GAME_DAY*23 //uncomment and set gametime for testing
+
+    timeOfYear = (gametime - GAME_MONTH - GAME_DAY) % GAME_YEAR
     
     const day = Math.floor(gametime/(20*60) - Math.floor(gametime/(20*60*31))*31)
     const month = Math.floor(gametime/(20*60*31) - Math.floor(gametime/(20*60*31*12))*12)
@@ -289,7 +292,11 @@ function mention(_data){
 }
 
 function getEventTimer(timeOffsetStart, timeOffsetEnd){
-    let timeOfYear = (gametime - GAME_MONTH - GAME_DAY) % GAME_YEAR
+    console.log(timeOfYear)
+    if(timeOffsetEnd > GAME_YEAR && timeOfYear < timeOffsetEnd - GAME_YEAR){
+        timeOffsetEnd -= GAME_YEAR
+        timeOffsetStart -= GAME_YEAR
+    }
     if(timeOfYear < timeOffsetStart - GAME_DAY)
         return `<t:${Math.floor(Date.now()/1000) - timeOfYear + timeOffsetStart - GAME_DAY}:R>`
     else if(timeOfYear < timeOffsetEnd)
@@ -351,6 +358,11 @@ if(data?.["farming"]?.["year"] == undefined){
 const now = new Date();
 const millisecondsUntilNextFullMinute = ((Math.floor(updateInterval/1000) - (now.getSeconds() % Math.floor(updateInterval/1000))) * 1000) - now.getMilliseconds();
 var start = 0;
+
+if(dev){
+    start = process.hrtime();
+    updateData()
+}
 
 setTimeout(() => {
     start = process.hrtime();
