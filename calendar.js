@@ -22,7 +22,7 @@ const news = "mining fiesta"
 
 
 
-const updateInterval = 30000
+const updateInterval = 30_000
 
 const lastRestart = new Date();
 
