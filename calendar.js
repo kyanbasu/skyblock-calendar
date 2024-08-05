@@ -296,7 +296,7 @@ function mention(_data){
 }
 
 function getEventTimer(timeOffsetStart, timeOffsetEnd){
-    console.log(timeOfYear)
+    dev && console.log(timeOfYear)
     if(timeOffsetEnd > GAME_YEAR && timeOfYear < timeOffsetEnd - GAME_YEAR){
         timeOffsetEnd -= GAME_YEAR
         timeOffsetStart -= GAME_YEAR
