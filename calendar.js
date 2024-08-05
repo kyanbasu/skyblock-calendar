@@ -12,7 +12,7 @@ const messageIDs = ["1268699252142506056", //prod
 const filename = dev ? "calendar-dev.json" : "calendar.json"
 
 
-const news = "JERRY <:stjerry:1268243619928870982> i wiecej eventow, fix eventow"
+const news = "mining fiesta"
 
 
 
@@ -240,6 +240,10 @@ function sendWebhook(){
                                     name: "<:fetchur:1267972967925809213> FETCHUR\n",
                                     value: `> ${fetchur[ data.fetchur.current ]}\n> next <t:${Math.floor(new Date(data.fetchur.reset).valueOf()/1000)}:R>`,
                                     inline: true,
+                                },
+                                {
+                                    name: 'Mining Fiesta',
+                                    value: `> <t:1722914100:R> - <t:${1722914100 + 8400}:R>\n> <t:1722951300:R> - <t:${1722951300 + 8400}:R>\n> <t:1722988500:R> - <t:${1722988500 + 8400}:R>\n> <t:1723025700:R> - <t:${1723025700 + 8400}:R>\n> <t:1723062900:R> - <t:${1723062900 + 8400}:R>`
                                 },
                                 {
                                     name: '\u200b',
