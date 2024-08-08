@@ -12,7 +12,7 @@ const messageIDs = ["1268699252142506056", //prod
 const filename = dev ? "calendar-dev.json" : "calendar.json"
 
 
-const news = "mining fiesta"
+const news = "brak."
 
 
 
@@ -232,8 +232,7 @@ function sendWebhook(){
                                     value: `> <:stjerry:1268243619928870982> Jerry's Workshop\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY, GAME_YEAR)}\n` +
                                            `> :birthday: New Year Celebration\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY*29, GAME_MONTH*11 + GAME_DAY*31)}\n` +
                                            `> :skull: Spooky Festival\n> ${getEventTimer(GAME_MONTH*7 + GAME_DAY*29, GAME_MONTH*7 + GAME_DAY*31)}\n` +
-                                           `> <:a_bunwink:1253677488891236443> Hoppity's Hunt\n> ${getEventTimer(GAME_MONTH*1 + GAME_DAY*1, GAME_MONTH*1 + GAME_DAY*1 + 3600*31)}\n` +
-                                           `> <:homik:692062324965638235> Election\n> ${getEventTimer(GAME_MONTH*5 + GAME_DAY*27, GAME_YEAR + GAME_MONTH*2 + GAME_DAY*26)}\n`,
+                                           `> <:a_bunwink:1253677488891236443> Hoppity's Hunt\n> ${getEventTimer(GAME_MONTH*1 + GAME_DAY*1, GAME_MONTH*1 + GAME_DAY*1 + 3600*31)}\n`,
                                     inline: true,
                                 },
                                 {
@@ -242,8 +241,8 @@ function sendWebhook(){
                                     inline: true,
                                 },
                                 {
-                                    name: 'Mining Fiesta',
-                                    value: `> <t:1722914100:R> - <t:${1722914100 + 8400}:R>\n> <t:1722951300:R> - <t:${1722951300 + 8400}:R>\n> <t:1722988500:R> - <t:${1722988500 + 8400}:R>\n> <t:1723025700:R> - <t:${1723025700 + 8400}:R>\n> <t:1723062900:R> - <t:${1723062900 + 8400}:R>`
+                                    name: '<:homik:692062324965638235> Election',
+                                    value: `> ${getEventTimer(GAME_MONTH*5 + GAME_DAY*27, GAME_YEAR + GAME_MONTH*2 + GAME_DAY*26)}\n`,
                                 },
                                 {
                                     name: '\u200b',
