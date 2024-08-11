@@ -152,16 +152,29 @@ async function updateData(){
 
     //farming calendar api
     const farmingPromise = new Promise((resolve, reject) => {
-        if(data["farming"]["year"] < year){
-            dev && console.log("fetching...")
-            ftch("https://api.elitebot.dev/contests/at/now").then(json => {
-                //console.log(json["contests"])
-                dev && console.log("fetched")
-                data["farming"] = json
-                resolve()
-            }).catch((error) => reject(error))
-        } else resolve()
+    if (data["farming"]["year"] < year) {
+        dev && console.log("fetching...");
+        fetch("https://api.elitebot.dev/contests/at/now")
+            .then(response => response.json())  // Parse the JSON response
+            .then(json => {
+                dev && console.log("fetched");
+                data["farming"] = json;  // Update data object with the fetched JSON
+                resolve();  // Resolve the promise
+            })
+            .catch(error => reject(error));  // Reject the promise if there's an error
+    } else {
+        resolve();  // Resolve immediately if the condition is not met
+    }
+});
+
+// Example usage of the promise
+farmingPromise
+    .then(() => {
+        console.log("Data has been updated");
     })
+    .catch(error => {
+        console.error("An error occurred:", error);
+    });
 
     //wait for all apis
     Promise.all([fetchurPromise, farmingPromise])
