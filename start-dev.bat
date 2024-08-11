@@ -1,1 +1,1 @@
-pm2 start ecosystem.config.js --watch
+node calendar.js
