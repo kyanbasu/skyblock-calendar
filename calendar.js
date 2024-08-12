@@ -51,6 +51,7 @@ const roles = {"Cocoa Beans": "1267926635420844093",
                 "Pumpkin": "1267928112495333446",
 }
 
+const GAME_HOUR = 50;
 const GAME_DAY = 20 * 60;
 const GAME_MONTH = GAME_DAY * 31;
 const GAME_YEAR = GAME_MONTH * 12;
@@ -129,11 +130,12 @@ async function updateData(){
     const month = Math.floor(gametime/(20*60*31) - Math.floor(gametime/(20*60*31*12))*12)
     const year = Math.floor(gametime/(20*60*31*12))
     if(day != 0)
-        //        determine season from array                  determine number suffix for day (st,nd,rd,th)
-        date = `${seasons[month > 0 ? month-1 : 11]} ${day}${(day%10 < 3 && day%10!=0) ? ed[day%10-1] : ed[3]} ${year}`
+        //      determine number suffix for day (st,nd,rd,th)                   determine season from array 
+        date = `${day}${(day%10 < 4 && day%10!=0) ? ed[day%10-1] : ed[3]} of ${seasons[month > 0 ? month-1 : 11]} ${year}`
     else
-        date = `${seasons[month > 0 ? month > 1 ? month-2 : 11 : 10]} ${31}${ed[0]} ${year}`
+        date = `${31}${ed[0]} of ${seasons[month > 0 ? month > 1 ? month-2 : 11 : 10]} ${year}`
     
+    date = `${String(Math.floor(gametime/GAME_HOUR)%24).padStart(2, '0')}:${String(Math.floor(Math.floor(gametime)%GAME_HOUR * (60/GAME_HOUR)/10)*10).padStart(2, '0')} ` + date
 
     tillNextSBDay = (Math.floor(gametime/(20*60))+1)*20*60 - gametime
     dev && console.log(tillNextSBDay + "s till next sb day")
@@ -230,11 +232,11 @@ function sendWebhook(){
                                     inline: false,
                                 },
                                 {
-                                    name: "<:PepoG:781852032213581866> EVENTS",
-                                    value: `> <:stjerry:1268243619928870982> Jerry's Workshop\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY, GAME_YEAR)}\n` +
-                                           `> :birthday: New Year Celebration\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY*29, GAME_MONTH*11 + GAME_DAY*31)}\n` +
-                                           `> :skull: Spooky Festival\n> ${getEventTimer(GAME_MONTH*7 + GAME_DAY*29, GAME_MONTH*7 + GAME_DAY*31)}\n` +
-                                           `> <:a_bunwink:1253677488891236443> Hoppity's Hunt\n> ${getEventTimer(GAME_MONTH*1 + GAME_DAY*1, GAME_MONTH*1 + GAME_DAY*1 + 3600*31)}\n`,
+                                    name: "<:PepoG:781852032213581866> EVENTS", // cool symbols ↪ ⏵
+                                    value: `> **⏵<:stjerry:1268243619928870982> Jerry's Workshop**\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY, GAME_YEAR)}\n` +
+                                           `> **⏵:birthday: New Year Celebration**\n> ${getEventTimer(GAME_MONTH*11 + GAME_DAY*29, GAME_MONTH*11 + GAME_DAY*31)}\n` +
+                                           `> **⏵:skull: Spooky Festival**\n> ${getEventTimer(GAME_MONTH*7 + GAME_DAY*29, GAME_MONTH*7 + GAME_DAY*31)}\n` +
+                                           `> **⏵<:a_bunwink:1253677488891236443> Hoppity's Hunt**\n> ${getEventTimer(GAME_MONTH*1 + GAME_DAY*1, GAME_MONTH*1 + GAME_DAY*1 + 3600*31)}\n`,
                                     inline: true,
                                 },
                                 {
