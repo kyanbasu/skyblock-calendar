@@ -391,7 +391,6 @@ function exitHandler(options, exitCode) {
         console.log(`> Saving data at ${new Date}`)
         saveData()
     }
-    if (exitCode || exitCode === 0) console.log(exitCode);
     if (options.exit) process.exit();
 }
 
