@@ -116,7 +116,7 @@ async function updateData(){
     }
     data["mentions"] = []
 
-    dev && console.log(data.fetchur)
+    //dev && console.log(data.fetchur)
     
     //let ms = (SERVER_START_UTC - SERVER_START_GAME_DATE + GAME_DAY * get("day") + GAME_MONTH * get("month") + GAME_YEAR * get("year")) * 1000;
     // (GAME_DAY * get("day") + GAME_DAY*31 * get("month") + GAME_DAY*31*12 * get("year")) = ms/1000 - (SERVER_START_UTC - SERVER_START_GAME_DATE)
@@ -152,12 +152,14 @@ async function updateData(){
 
     //farming calendar api
     const farmingPromise = new Promise((resolve, reject) => {
-        if(data["farming"]["year"] < year){
+        if(data["farming"]["last-contest-ts"] - 10000 < Date.now()/1000 && data["farming"]["last-fetch"] < Date.now() - 60000*10){
             dev && console.log("fetching...")
             ftch("https://api.elitebot.dev/contests/at/now").then(json => {
                 //console.log(json["contests"])
                 dev && console.log("fetched")
                 data["farming"] = json
+                data["farming"]["last-fetch"] = Date.now()
+                data["farming"]["last-contest-ts"] = Math.max(...Object.keys(data["farming"]["contests"]).map(Number))
                 resolve()
             }).catch((error) => reject(error))
         } else resolve()
@@ -295,7 +297,7 @@ function mention(_data){
 }
 
 function getEventTimer(timeOffsetStart, timeOffsetEnd){
-    dev && console.log(timeOfYear)
+    //dev && console.log(timeOfYear)
     if(timeOffsetEnd > GAME_YEAR && timeOfYear < timeOffsetEnd - GAME_YEAR){
         timeOffsetEnd -= GAME_YEAR
         timeOffsetStart -= GAME_YEAR
@@ -348,12 +350,14 @@ if(data?.["fetchur"]?.["current"] == undefined){
     data["fetchur"]["current"] = 0
 }
 
-if(data?.["farming"]?.["year"] == undefined){
+if(data?.["farming"]?.["last-fetch"] == undefined){
     dev && console.log("fetching...")
     ftch("https://api.elitebot.dev/contests/at/now").then(json => {
         //console.log(json["contests"])
         dev && console.log("fetched")
         data["farming"] = json
+        data["farming"]["last-fetch"] = Date.now()
+        data["farming"]["last-contest-ts"] = Math.max(...Object.keys(data["farming"]["contests"]).map(Number))
     })
 }
 
