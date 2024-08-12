@@ -12,7 +12,7 @@ const messageIDs = ["1268699252142506056", //prod
 const filename = dev ? "calendar-dev.json" : "calendar.json"
 
 
-const news = "brak."
+const news = "naprawiony farming"
 
 
 
@@ -154,7 +154,7 @@ async function updateData(){
 
     //farming calendar api
     const farmingPromise = new Promise((resolve, reject) => {
-        if(data["farming"]["last-contest-ts"] - 10000 < Date.now()/1000 && data["farming"]["last-fetch"] < Date.now() - 60000*10){
+        if(data["farming"]["last-contest-ts"] - 10000 < Date.now()/1000 && data["farming"]["last-fetch"] < Date.now() - 60000*60){
             dev && console.log("fetching...")
             ftch("https://api.elitebot.dev/contests/at/now").then(json => {
                 //console.log(json["contests"])
